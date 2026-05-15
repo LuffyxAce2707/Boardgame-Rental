@@ -1,36 +1,30 @@
 const mongoose = require('mongoose');
 
-const rentalSchema = new mongoose.Schema(
-  {
-    user: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
-      required: true
-    },
-    game: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Game',
-      required: true
-    },
-    rentedDate: {
-      type: Date,
-      default: Date.now
-    },
-    dueDate: {
-      type: Date,
-      required: true
-    },
-    returnedDate: {
-      type: Date,
-      default: null
-    },
-    status: {
-      type: String,
-      enum: ['active', 'returned', 'overdue'],
-      default: 'active'
-    }
+const rentalSchema = new mongoose.Schema({
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
   },
-  { timestamps: true }
-);
+  gameId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'BoardGame'
+  },
+  quantity: Number,
+  rentDate: Date,
+  dueDate: Date,
+  returnDate: Date,
+  status: {
+    type: String,
+    enum: ['Rented', 'Returned', 'Late'],
+    default: 'Rented'
+  },
+  depositAmount: Number,
+  fineAmount: {
+    type: Number,
+    default: 0
+  }
+}, {
+  timestamps: true
+});
 
 module.exports = mongoose.model('Rental', rentalSchema);

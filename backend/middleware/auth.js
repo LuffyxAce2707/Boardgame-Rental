@@ -1,17 +1,25 @@
 const jwt = require('jsonwebtoken');
 
-function auth(req, res, next) {
-    const token = req.headers.authorization;
-
-    if (!token) return res.status(401).send("Access denied");
-
+module.exports = (roles = []) => {
+  return (req, res, next) => {
     try {
-        const verified = jwt.verify(token, process.env.JWT_SECRET || "SECRET_KEY");
-        req.user = verified;
-        next();
-    } catch {
-        res.status(400).send("Invalid token");
-    }
-}
+      const token = req.headers.authorization?.split(' ')[1];
 
-module.exports = auth;
+      if (!token) {
+        return res.status(401).json({ message: 'Unauthorized' });
+      }
+
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+      req.user = decoded;
+
+      if (roles.length && !roles.includes(decoded.role)) {
+        return res.status(403).json({ message: 'Forbidden' });
+      }
+
+      next();
+    } catch (err) {
+      res.status(401).json({ message: 'Invalid token' });
+    }
+  };
+};
