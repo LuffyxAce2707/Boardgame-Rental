@@ -7,6 +7,11 @@ import {
 import Navbar from './components/Navbar';
 
 import Home from './pages/Home';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import GameDetails from './pages/GameDetails';
+import Rentals from './pages/Rentals';
+import Dashboard from './pages/Dashboard';
 
 function App() {
 
@@ -19,8 +24,17 @@ function App() {
 
         <Route path="/" element={<Home />} />
 
-      </Routes>
+        <Route path="/login" element={<Login />} />
 
+        <Route path="/register" element={<Register />} />
+
+        <Route path="/games/:id" element={<GameDetails />} />
+
+        <Route path="/rentals" element={<Rentals />} />
+
+        <Route path="/dashboard" element={<Dashboard />} />
+
+      </Routes>
     </BrowserRouter>
   );
 }

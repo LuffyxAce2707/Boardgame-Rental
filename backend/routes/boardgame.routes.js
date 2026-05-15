@@ -1,15 +1,13 @@
 const express = require('express');
-const authMiddleware = require('../middleware/auth');
+const authMiddleware = require('../middleware/auth.middleware');
 const router = express.Router();
 
 const boardgameController = require('../controllers/boardgame.controller');
 
-const authMiddleware = require('../middleware/auth.middleware');
-
 // Public APIs
-router.get('/', boardgameController.getAllGames);
-router.get('/:id', boardgameController.getGameById);
-router.get('/search', boardgameController.searchGames);
+router.get('/', authMiddleware, boardgameController.getAllGames);
+router.get('/:id',  authMiddleware, boardgameController.getGameById);
+router.get('/search', authMiddleware, boardgameController.searchGames);
 
 // Admin / Staff APIs
 router.post(

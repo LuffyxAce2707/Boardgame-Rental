@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 
 import API from '../api/axios';
 
+import GameCard from '../components/GameCard';
+
 const Home = () => {
 
   const [games, setGames] = useState([]);
@@ -12,9 +14,15 @@ const Home = () => {
 
   const fetchGames = async () => {
 
-    const res = await API.get('/games');
+    try {
 
-    setGames(res.data.data || res.data);
+      const res = await API.get('/games');
+
+      setGames(res.data.data || res.data);
+
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (
@@ -22,11 +30,14 @@ const Home = () => {
 
       <h1>Boardgame Collection</h1>
 
-      {games.map((game) => (
-        <div key={game._id}>
-          {game.title}
-        </div>
-      ))}
+      <div className="games-grid">
+        {games.map((game) => (
+          <GameCard
+            key={game._id}
+            game={game}
+          />
+        ))}
+      </div>
     </div>
   );
 };
