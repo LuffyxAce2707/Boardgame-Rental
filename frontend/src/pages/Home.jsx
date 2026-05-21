@@ -16,7 +16,7 @@ const Home = () => {
 
     try {
 
-      const res = await API.get('/games');
+      const res = await API.get('/boardgames');
 
       setGames(res.data.data || res.data);
 

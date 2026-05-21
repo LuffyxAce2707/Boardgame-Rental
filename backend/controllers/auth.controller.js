@@ -15,10 +15,13 @@ exports.register = async (req, res) => {
     }
     const { fullName, email, password } = req.body;
 
-    const existingUser = await User.findOne({ email });
+    const normalizedEmail = email.trim().toLowerCase();
+
+    const existingUser = await User.findOne({ email: normalizedEmail });
 
     if (existingUser) {
       return res.status(400).json({
+        success: false,
         message: 'Email already exists'
       });
     }
@@ -27,7 +30,7 @@ exports.register = async (req, res) => {
 
     const user = await User.create({
       fullName,
-      email,
+      email: normalizedEmail,
       password: hashedPassword
     });
 
@@ -42,6 +45,7 @@ exports.register = async (req, res) => {
 
   } catch (err) {
     res.status(500).json({
+      success: false,
       error: err.message
     });
   }
@@ -51,10 +55,13 @@ exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    const user = await User.findOne({ email });
+    const normalizedEmail = email.trim().toLowerCase();
+
+    const user = await User.findOne({ email: normalizedEmail });
 
     if (!user) {
       return res.status(404).json({
+        success: false,
         message: 'User not found'
       });
     }
@@ -63,6 +70,7 @@ exports.login = async (req, res) => {
 
     if (!isMatch) {
       return res.status(400).json({
+        success: false,
         message: 'Invalid credentials'
       });
     }
@@ -74,7 +82,7 @@ exports.login = async (req, res) => {
       },
       process.env.JWT_SECRET,
       {
-        expiresIn: '7d'
+        expiresIn: process.env.JWT_EXPIRES_IN
       }
     );
 
@@ -90,6 +98,7 @@ exports.login = async (req, res) => {
 
   } catch (err) {
     res.status(500).json({
+      success: false,
       error: err.message
     });
   }

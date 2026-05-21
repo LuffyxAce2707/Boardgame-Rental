@@ -21,7 +21,7 @@ router.put(
 
 // Rental history
 router.get(
-  '/history/:userId',
+  '/history',
   authMiddleware(['customer', 'admin', 'staff']),
   rentalController.getRentalHistory
 );

@@ -9,9 +9,10 @@ import Navbar from './components/Navbar';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
-import GameDetails from './pages/GameDetails';
+import BoardgameDetails from './pages/BoardgameDetails';
 import Rentals from './pages/Rentals';
-import Dashboard from './pages/Dashboard';
+import AdminDashboard from './pages/AdminDashboard';
+import RentalHistory from './pages/RentalHistory';
 
 function App() {
 
@@ -28,11 +29,13 @@ function App() {
 
         <Route path="/register" element={<Register />} />
 
-        <Route path="/games/:id" element={<GameDetails />} />
+        <Route path="/boardgames/:id" element={<BoardgameDetails />} />
 
         <Route path="/rentals" element={<Rentals />} />
 
-        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/admin" element={<AdminDashboard />} />
+
+        <Route path="/rentals" element={<RentalHistory />} />
 
       </Routes>
     </BrowserRouter>

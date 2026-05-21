@@ -10,6 +10,14 @@ exports.rentGame = async (data) => {
     days
   } = data;
 
+  if (!quantity || quantity <= 0) {
+    throw new Error('Invalid quantity');
+  }
+  
+  if (!days || days <= 0) {
+    throw new Error('Invalid rental duration');
+  }
+
   const game = await BoardGame.findById(gameId);
 
   if (!game) {
@@ -33,6 +41,10 @@ exports.rentGame = async (data) => {
 
   game.availableQuantity -= quantity;
 
+  if (game.availableQuantity === 0) {
+    game.status = 'OutOfStock';
+  }
+
   await game.save();
 
   return rental;
@@ -41,6 +53,10 @@ exports.rentGame = async (data) => {
 exports.returnGame = async (rentalId) => {
 
   const rental = await Rental.findById(rentalId);
+
+  if (rental.status === 'Returned' || rental.returnDate) {
+    throw new Error('Game already returned');
+  }
 
   if (!rental) {
     throw new Error('Rental not found');
@@ -71,6 +87,10 @@ exports.returnGame = async (rentalId) => {
 
   game.availableQuantity += rental.quantity;
 
+  if (game.availableQuantity > 0) {
+    game.status = 'Available';
+  }
+
   await game.save();
 
   return {
@@ -82,14 +102,14 @@ exports.returnGame = async (rentalId) => {
 exports.getRentalHistory = async (userId) => {
 
   return await Rental.find({ userId })
-    .populate('gameId')
+    .populate('gameId', 'title image rentalPrice')
     .sort({ createdAt: -1 });
 };
 
 exports.getAllRentals = async () => {
 
   return await Rental.find()
-    .populate('userId')
-    .populate('gameId')
+    .populate('userId', 'name email')
+    .populate('gameId', 'title image')
     .sort({ createdAt: -1 });
 };
