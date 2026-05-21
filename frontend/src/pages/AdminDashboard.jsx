@@ -1,8 +1,13 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+
+import { Navigate } from "react-router-dom";
 
 import API from "../api/axios";
 
+import { AuthContext } from "../context/AuthContext";
+
 const AdminDashboard = () => {
+  const { user } = useContext(AuthContext);
   const [games, setGames] = useState([]);
 
   const [rentals, setRentals] = useState([]);
@@ -12,18 +17,21 @@ const AdminDashboard = () => {
   const [newGame, setNewGame] = useState({
     title: "",
     description: "",
-    pricePerDay: "",
+    rentalPrice: "",
+    quantity: "1",
   });
 
   const [image, setImage] = useState(null);
 
   const fetchDashboardData = async () => {
-    const gameResponse = await API.get('/boardgames');
+    const gameResponse = await API.get('/boardgames', {
+      params: { limit: 100 },
+    });
     const rentalResponse = await API.get('/rentals');
 
     return {
-      games: gameResponse.data.data,
-      rentals: rentalResponse.data.data,
+      games: gameResponse.data?.data ?? [],
+      rentals: rentalResponse.data?.data ?? [],
     };
   };
 
@@ -45,6 +53,10 @@ const AdminDashboard = () => {
         setRentals(rentals);
       } catch (error) {
         console.error(error);
+        alert(
+          error.response?.data?.message ||
+            "Failed to load dashboard. Log in as admin or staff."
+        );
       } finally {
         setLoading(false);
       }
@@ -63,7 +75,8 @@ const AdminDashboard = () => {
 
       formData.append("description", newGame.description);
 
-      formData.append("pricePerDay", newGame.pricePerDay);
+      formData.append("rentalPrice", newGame.rentalPrice);
+      formData.append("quantity", newGame.quantity);
 
       if (image) {
         formData.append("image", image);
@@ -80,7 +93,8 @@ const AdminDashboard = () => {
       setNewGame({
         title: "",
         description: "",
-        pricePerDay: "",
+        rentalPrice: "",
+        quantity: "1",
       });
 
       setImage(null);
@@ -89,7 +103,11 @@ const AdminDashboard = () => {
     } catch (error) {
       console.error(error);
 
-      alert("Create failed");
+      alert(
+        error.response?.data?.error ||
+          error.response?.data?.message ||
+          "Create failed"
+      );
     }
   };
 
@@ -104,6 +122,22 @@ const AdminDashboard = () => {
   const overdueRentals = rentals.filter(
     (rental) => rental.status === "Late",
   ).length;
+
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
+
+  if (user.role !== "admin" && user.role !== "staff") {
+    return (
+      <div style={{ padding: "20px" }}>
+        <h2>Admin access required</h2>
+        <p>
+          Your account role is &quot;{user.role}&quot;. Ask an administrator to
+          set your role to admin or staff in the database.
+        </p>
+      </div>
+    );
+  }
 
   if (loading) {
     return <h2>Loading...</h2>;
@@ -165,12 +199,31 @@ const AdminDashboard = () => {
 
         <input
           type="number"
-          placeholder="Price Per Day"
-          value={newGame.pricePerDay}
+          placeholder="Rental Price (per day)"
+          value={newGame.rentalPrice}
           onChange={(e) =>
             setNewGame({
               ...newGame,
-              pricePerDay: e.target.value,
+              rentalPrice: e.target.value,
+            })
+          }
+          style={{
+            display: "block",
+            marginBottom: "10px",
+            width: "100%",
+            padding: "10px",
+          }}
+        />
+
+        <input
+          type="number"
+          min="1"
+          placeholder="Quantity"
+          value={newGame.quantity}
+          onChange={(e) =>
+            setNewGame({
+              ...newGame,
+              quantity: e.target.value,
             })
           }
           style={{

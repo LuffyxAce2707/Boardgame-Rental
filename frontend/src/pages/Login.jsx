@@ -21,9 +21,20 @@ const Login = () => {
 
       const res = await API.post('/auth/login', form);
 
-      login(res.data.token, res.data.data);
+      const userData = res.data.data ?? res.data.user;
 
-      navigate('/');
+      if (!res.data.token || !userData) {
+        alert('Login failed: invalid server response');
+        return;
+      }
+
+      login(res.data.token, userData);
+
+      if (userData.role === 'admin' || userData.role === 'staff') {
+        navigate('/admin');
+      } else {
+        navigate('/');
+      }
 
     } catch (err) {
       console.log(err);

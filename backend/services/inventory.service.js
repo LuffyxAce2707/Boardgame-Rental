@@ -1,4 +1,4 @@
-const BoardGame = require('../models/BoardGame');
+const BoardGame = require('../models/Boardgame');
 
 exports.getAllGames = async (query) => {
   const page = Number(query.page) || 1;

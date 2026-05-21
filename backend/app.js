@@ -12,13 +12,14 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
+app.use('/uploads', express.static(require('path').join(__dirname, 'uploads')));
 
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log('MongoDB Connected'))
   .catch(err => console.log(err));
 
 app.use('/api/auth', authRoutes);
-app.use('/api/games', boardgameRoutes);
+app.use('/api/boardgames', boardgameRoutes);
 app.use('/api/rentals', rentalRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 

@@ -84,9 +84,9 @@ const BoardgameDetail = () => {
       <h1>{game.title}</h1>
 
       {
-        game.image && (
+        game.imageUrl && (
           <img
-            src={game.image}
+            src={game.imageUrl}
             alt={game.title}
             width="300"
           />

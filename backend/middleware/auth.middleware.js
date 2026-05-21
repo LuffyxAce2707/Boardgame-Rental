@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const debugLog = require('../utils/debugLog');
 
 const authMiddleware = (roles = []) => {
 
@@ -41,9 +42,17 @@ const authMiddleware = (roles = []) => {
         });
       }
 
+      // #region agent log
+      debugLog({ location: 'auth.middleware.js', message: 'auth passed', data: { role: req.user?.role, rolesRequired: roles }, hypothesisId: 'H1' });
+      // #endregion
+
       next();
 
     } catch (error) {
+
+      // #region agent log
+      debugLog({ location: 'auth.middleware.js', message: 'auth failed', data: { error: error.message }, hypothesisId: 'H1' });
+      // #endregion
 
       return res.status(401).json({
         message: 'Invalid token'

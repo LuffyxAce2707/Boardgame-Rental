@@ -2,13 +2,13 @@ const mongoose = require('mongoose');
 
 const rentalSchema = new mongoose.Schema(
   {
-    userID: {
+    userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
       required: true
     },
 
-    gameID: {
+    gameId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'BoardGame',
       required: true

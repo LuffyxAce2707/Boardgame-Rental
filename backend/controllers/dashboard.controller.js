@@ -1,4 +1,4 @@
-const BoardGame = require('../models/BoardGame');
+const BoardGame = require('../models/Boardgame');
 const Rental = require('../models/Rental');
 const User = require('../models/User');
 
@@ -8,7 +8,7 @@ exports.getStats = async (req, res) => {
     const totalGames = await BoardGame.countDocuments();
 
     const rentedGames = await Rental.countDocuments({
-      status: 'Rented'
+      status: 'Active'
     });
 
     const totalUsers = await User.countDocuments();

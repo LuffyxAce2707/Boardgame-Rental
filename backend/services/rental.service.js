@@ -1,5 +1,5 @@
 const Rental = require('../models/Rental');
-const BoardGame = require('../models/BoardGame');
+const BoardGame = require('../models/Boardgame');
 
 exports.rentGame = async (data) => {
 
@@ -54,12 +54,12 @@ exports.returnGame = async (rentalId) => {
 
   const rental = await Rental.findById(rentalId);
 
-  if (rental.status === 'Returned' || rental.returnDate) {
-    throw new Error('Game already returned');
-  }
-
   if (!rental) {
     throw new Error('Rental not found');
+  }
+
+  if (rental.status === 'Returned' || rental.returnDate) {
+    throw new Error('Game already returned');
   }
 
   const game = await BoardGame.findById(rental.gameId);
@@ -102,14 +102,14 @@ exports.returnGame = async (rentalId) => {
 exports.getRentalHistory = async (userId) => {
 
   return await Rental.find({ userId })
-    .populate('gameId', 'title image rentalPrice')
+    .populate('gameId', 'title imageUrl rentalPrice')
     .sort({ createdAt: -1 });
 };
 
 exports.getAllRentals = async () => {
 
   return await Rental.find()
-    .populate('userId', 'name email')
-    .populate('gameId', 'title image')
+    .populate('userId', 'fullName email')
+    .populate('gameId', 'title imageUrl')
     .sort({ createdAt: -1 });
 };

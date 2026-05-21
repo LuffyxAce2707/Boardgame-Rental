@@ -6,7 +6,7 @@ const GameCard = ({ game }) => {
     <div className="game-card">
 
       <img
-        src={game.image}
+        src={game.imageUrl}
         alt={game.title}
       />
 
@@ -16,7 +16,7 @@ const GameCard = ({ game }) => {
 
       <p>${game.rentalPrice}</p>
 
-      <Link to={`/games/${game._id}`}>
+      <Link to={`/boardgames/${game._id}`}>
         View Details
       </Link>
     </div>

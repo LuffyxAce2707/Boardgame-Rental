@@ -87,9 +87,9 @@ const BoardgameList = () => {
           >
 
             {
-              game.image && (
+              game.imageUrl && (
                 <img
-                  src={game.image}
+                  src={game.imageUrl}
                   alt={game.title}
                   width="100%"
                   height="200"
