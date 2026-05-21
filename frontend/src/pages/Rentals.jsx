@@ -1,10 +1,7 @@
-const Rentals = () => {
+import { Navigate } from 'react-router-dom';
 
-  return (
-    <div>
-      <h1>Rental History</h1>
-    </div>
-  );
+const Rentals = () => {
+  return <Navigate to="/rentals/history" replace />;
 };
 
 export default Rentals;

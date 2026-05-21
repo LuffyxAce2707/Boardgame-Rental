@@ -1,5 +1,4 @@
 const inventoryService = require('../services/inventory.service');
-const debugLog = require('../utils/debugLog');
 
 const resolveImageUrl = (file, body) => {
   if (!file) {
@@ -40,10 +39,6 @@ exports.getAllGames = async (req, res) => {
   try {
     const games = await inventoryService.getAllGames(req.query);
 
-    // #region agent log
-    debugLog({ location: 'boardgame.controller.js:getAllGames', message: 'getAllGames ok', data: { count: games?.length, userRole: req.user?.role }, hypothesisId: 'H1' });
-    // #endregion
-
     res.json({
       success: true,
       data: games
@@ -66,10 +61,6 @@ exports.createGame = async (req, res) => {
       data: game
     });
   } catch (err) {
-    // #region agent log
-    debugLog({ location: 'boardgame.controller.js:createGame', message: 'createGame error', data: { error: err.message }, hypothesisId: 'H2' });
-    // #endregion
-
     res.status(500).json({
       error: err.message
     });

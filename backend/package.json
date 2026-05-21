@@ -5,7 +5,10 @@
   "scripts": {
     "start": "node app.js",
     "dev": "nodemon app.js",
-    "promote-admin": "node scripts/promote-admin.js"
+    "promote-admin": "node scripts/promote-admin.js",
+    "check-env": "node scripts/check-env.js",
+    "seed-demo": "node scripts/seed-demo.js",
+    "rehearse-demo": "node scripts/rehearse-demo.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

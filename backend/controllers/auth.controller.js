@@ -30,6 +30,7 @@ exports.register = async (req, res) => {
 
     const user = await User.create({
       fullName,
+      username: normalizedEmail,
       email: normalizedEmail,
       password: hashedPassword
     });
@@ -50,8 +51,6 @@ exports.register = async (req, res) => {
     });
   }
 };
-
-const debugLog = require('../utils/debugLog');
 
 exports.login = async (req, res) => {
   try {
@@ -92,15 +91,6 @@ exports.login = async (req, res) => {
 
     delete safeUser.password;
 
-    // #region agent log
-    debugLog({
-      location: 'auth.controller.js:login',
-      message: 'login ok',
-      data: { role: safeUser.role },
-      hypothesisId: 'H3'
-    });
-    // #endregion
-
     res.json({
       success: true,
       token,
@@ -108,15 +98,6 @@ exports.login = async (req, res) => {
     });
 
   } catch (err) {
-    // #region agent log
-    debugLog({
-      location: 'auth.controller.js:login',
-      message: 'login error',
-      data: { error: err.message },
-      hypothesisId: 'H3'
-    });
-    // #endregion
-
     res.status(500).json({
       success: false,
       error: err.message

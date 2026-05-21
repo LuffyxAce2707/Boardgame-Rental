@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const multer = require('multer');
-const { CloudinaryStorage } = require('multer-storage-cloudinary');
+const cloudinaryStorage = require('multer-storage-cloudinary');
 const cloudinary = require('../config/cloudinary');
 
 const hasCloudinaryConfig = Boolean(
@@ -17,12 +17,10 @@ if (!hasCloudinaryConfig && !fs.existsSync(uploadsDir)) {
 }
 
 const storage = hasCloudinaryConfig
-  ? new CloudinaryStorage({
+  ? cloudinaryStorage({
       cloudinary,
-      params: {
-        folder: 'boardgames',
-        allowed_formats: ['jpg', 'jpeg', 'png', 'webp']
-      }
+      folder: 'boardgames',
+      allowedFormats: ['jpg', 'jpeg', 'png', 'webp']
     })
   : multer.diskStorage({
       destination: uploadsDir,
@@ -44,6 +42,11 @@ const uploadImage = (req, res, next) => {
 
     if (req.file && !hasCloudinaryConfig) {
       req.file.path = `/uploads/${req.file.filename}`;
+    }
+
+    if (req.file && hasCloudinaryConfig && req.file.path) {
+      // Cloudinary returns secure_url on the file object
+      req.file.path = req.file.path || req.file.secure_url;
     }
 
     next();
