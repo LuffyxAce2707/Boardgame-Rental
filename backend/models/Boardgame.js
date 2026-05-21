@@ -45,8 +45,9 @@ const boardgameSchema = new mongoose.Schema(
       default: 1
     },
 
-    image: {
-      type: String
+    imageUrl: {
+      type: String,
+      default: ''
     },
 
     status: {

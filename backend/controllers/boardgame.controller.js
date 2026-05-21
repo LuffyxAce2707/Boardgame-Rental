@@ -17,7 +17,12 @@ exports.getAllGames = async (req, res) => {
 exports.createGame = async (req, res) => {
   try {
 
-    const game = await inventoryService.createGame(req.body);
+    const gameData = {
+      ...req.body,
+      imageUrl: req.file ? req.file.path : ''
+    };
+    
+    const game = await Boardgame.create(gameData);
 
     res.status(201).json(game);
 
@@ -44,17 +49,25 @@ exports.searchGames = async (req, res) => {
 
 exports.updateGame = async (req, res) => {
   try {
+    const updateData = {
+      ...req.body
+    };
 
-    const game = await inventoryService.updateGame(
+    if (req.file) {
+      updateData.imageUrl = req.file.path;
+    }
+
+    const updatedGame = await Boardgame.findByIdAndUpdate(
       req.params.id,
-      req.body
+      updateData,
+      { new: true }
     );
 
-    res.json(game);
+    res.json(updatedGame);
 
-  } catch (err) {
+  } catch (error) {
     res.status(500).json({
-      error: err.message
+      message: error.message
     });
   }
 };

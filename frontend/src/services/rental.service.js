@@ -1,4 +1,4 @@
-import API from './api';
+import API from '../api/axios';
 
 export const rentGame = async (data) => {
   const response = await API.post('/rentals', data);

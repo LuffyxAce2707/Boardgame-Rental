@@ -9,21 +9,17 @@ const Home = () => {
   const [games, setGames] = useState([]);
 
   useEffect(() => {
+    const fetchGames = async () => {
+      try {
+        const res = await API.get('/boardgames');
+        setGames(res.data.data || res.data);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
     fetchGames();
   }, []);
-
-  const fetchGames = async () => {
-
-    try {
-
-      const res = await API.get('/boardgames');
-
-      setGames(res.data.data || res.data);
-
-    } catch (err) {
-      console.log(err);
-    }
-  };
 
   return (
     <div className="container">

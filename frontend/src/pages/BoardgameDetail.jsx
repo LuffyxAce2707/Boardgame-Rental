@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import { useParams } from 'react-router-dom';
 
@@ -14,33 +14,30 @@ const BoardgameDetail = () => {
 
   const [loading, setLoading] = useState(true);
 
-  const fetchGame = async () => {
-
-    try {
-
-      const response = await API.get(
-        `/boardgames/${id}`
-      );
-
-      setGame(response.data.data);
-
-    } catch (error) {
-
-      console.error(error);
-
-    } finally {
-
-      setLoading(false);
-
-    }
-
-  };
+  const getGameData = useCallback(async () => {
+    const response = await API.get(`/boardgames/${id}`);
+    return response.data.data;
+  }, [id]);
 
   useEffect(() => {
+    const loadGame = async () => {
+      try {
+        const gameData = await getGameData();
+        setGame(gameData);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-    fetchGame();
+    loadGame();
+  }, [getGameData]);
 
-  }, [id]);
+  const refreshGame = async () => {
+    const gameData = await getGameData();
+    setGame(gameData);
+  };
 
   const handleRent = async () => {
 
@@ -54,7 +51,7 @@ const BoardgameDetail = () => {
 
       alert('Game rented successfully');
 
-      fetchGame();
+      await refreshGame();
 
     } catch (error) {
 

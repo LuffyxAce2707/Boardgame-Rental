@@ -2,15 +2,15 @@ const mongoose = require('mongoose');
 
 const rentalSchema = new mongoose.Schema(
   {
-    user: {
+    userID: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
       required: true
     },
 
-    boardgame: {
+    gameID: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Boardgame',
+      ref: 'BoardGame',
       required: true
     },
 
@@ -37,8 +37,8 @@ const rentalSchema = new mongoose.Schema(
 
     status: {
       type: String,
-      enum: ['Rented', 'Returned', 'Late'],
-      default: 'Rented'
+      enum: ['Active','Returned','Late'],
+      default: 'Active'
     },
 
     depositAmount: {

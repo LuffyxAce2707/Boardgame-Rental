@@ -14,30 +14,19 @@ const BoardgameList = () => {
 
   const [search, setSearch] = useState('');
 
-  const fetchGames = async () => {
-
-    try {
-
-      const response = await API.get('/boardgames');
-
-      setGames(response.data.data);
-
-    } catch (error) {
-
-      console.error(error);
-
-    } finally {
-
-      setLoading(false);
-
-    }
-
-  };
-
   useEffect(() => {
+    const fetchGames = async () => {
+      try {
+        const response = await API.get('/boardgames');
+        setGames(response.data.data);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
     fetchGames();
-
   }, []);
 
   const filteredGames = games.filter((game) => {

@@ -10,23 +10,21 @@ const RentalHistory = () => {
   const [rentals, setRentals] = useState([]);
 
   const fetchRentals = async () => {
-
-    try {
-
-      const response = await getRentalHistory();
-
-      setRentals(response.data);
-
-    } catch (error) {
-
-      console.error(error);
-
-    }
-
+    const response = await getRentalHistory();
+    return response.data;
   };
 
   useEffect(() => {
-    fetchRentals();
+    const loadRentals = async () => {
+      try {
+        const rentalsData = await fetchRentals();
+        setRentals(rentalsData);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    loadRentals();
   }, []);
 
   const handleReturn = async (id) => {
