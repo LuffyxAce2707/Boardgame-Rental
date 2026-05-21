@@ -10,6 +10,14 @@ const AdminDashboard = () => {
 
   const [loading, setLoading] = useState(true);
 
+  const [newGame, setNewGame] = useState({
+    title: '',
+    description: '',
+    pricePerDay: ''
+  });
+
+  const [image, setImage] = useState(null);
+
   const fetchData = async () => {
 
     try {
