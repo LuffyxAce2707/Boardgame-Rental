@@ -23,6 +23,12 @@ const AdminDashboard = () => {
 
   const [image, setImage] = useState(null);
 
+  const [editingGameId, setEditingGameId] = useState(null);
+
+  const [editGame, setEditGame] = useState(null);
+
+  const [editImage, setEditImage] = useState(null);
+
   const fetchDashboardData = async () => {
     const gameResponse = await API.get('/boardgames', {
       params: { limit: 100 },
@@ -82,11 +88,7 @@ const AdminDashboard = () => {
         formData.append("image", image);
       }
 
-      await API.post("/boardgames", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      await API.post("/boardgames", formData);
 
       alert("Game created");
 
@@ -107,6 +109,77 @@ const AdminDashboard = () => {
         error.response?.data?.error ||
           error.response?.data?.message ||
           "Create failed"
+      );
+    }
+  };
+
+  const handleEditGame = (game) => {
+    setEditingGameId(game._id);
+    setEditGame({
+      title: game.title,
+      description: game.description,
+      rentalPrice: game.rentalPrice || "",
+      quantity: game.quantity || 1,
+      category: game.category || "",
+      imageUrl: game.image || "",
+    });
+    setEditImage(null);
+  };
+
+  const handleCancelEdit = () => {
+    setEditingGameId(null);
+    setEditGame(null);
+    setEditImage(null);
+  };
+
+  const handleUpdateGame = async (e) => {
+    e.preventDefault();
+
+    try {
+      const formData = new FormData();
+
+      formData.append("title", editGame.title);
+      formData.append("category", editGame.category);
+      formData.append("description", editGame.description);
+      formData.append("rentalPrice", editGame.rentalPrice);
+      formData.append("quantity", editGame.quantity);
+
+      if (editImage) {
+        formData.append("image", editImage);
+      } else if (editGame.imageUrl) {
+        formData.append("imageUrl", editGame.imageUrl);
+      }
+
+      await API.put(`/boardgames/${editingGameId}`, formData);
+
+      alert("Game updated successfully");
+      handleCancelEdit();
+      await refreshDashboard();
+    } catch (error) {
+      console.error(error);
+      alert(
+        error.response?.data?.error ||
+          error.response?.data?.message ||
+          "Update failed"
+      );
+    }
+  };
+
+  const handleDeleteGame = async (gameId) => {
+    if (!window.confirm("Are you sure you want to delete this game?")) {
+      return;
+    }
+
+    try {
+      await API.delete(`/boardgames/${gameId}`);
+      alert("Game deleted successfully");
+      await refreshDashboard();
+    } catch (error) {
+      console.error(error);
+      alert(
+        error.response?.data?.error ||
+          error.response?.data?.message ||
+          "Delete failed"
       );
     }
   };
@@ -298,6 +371,190 @@ const AdminDashboard = () => {
           <p>{overdueRentals}</p>
         </div>
       </div>
+
+      {editingGameId && (
+        <div
+          style={{
+            marginBottom: "30px",
+            border: "2px solid #4CAF50",
+            padding: "20px",
+            borderRadius: "10px",
+            backgroundColor: "#f9f9f9",
+          }}
+        >
+          <h2>Edit Boardgame</h2>
+          <form onSubmit={handleUpdateGame}>
+            <input
+              type="text"
+              placeholder="Title"
+              value={editGame.title}
+              onChange={(e) =>
+                setEditGame({
+                  ...editGame,
+                  title: e.target.value,
+                })
+              }
+              style={{
+                display: "block",
+                marginBottom: "10px",
+                width: "100%",
+                padding: "10px",
+              }}
+            />
+
+            <textarea
+              placeholder="Description"
+              value={editGame.description}
+              onChange={(e) =>
+                setEditGame({
+                  ...editGame,
+                  description: e.target.value,
+                })
+              }
+              style={{
+                display: "block",
+                marginBottom: "10px",
+                width: "100%",
+                padding: "10px",
+              }}
+            />
+
+            <input
+              type="text"
+              placeholder="Category"
+              value={editGame.category}
+              onChange={(e) =>
+                setEditGame({
+                  ...editGame,
+                  category: e.target.value,
+                })
+              }
+              style={{
+                display: "block",
+                marginBottom: "10px",
+                width: "100%",
+                padding: "10px",
+              }}
+            />
+
+            <input
+              type="number"
+              placeholder="Rental Price (per day)"
+              value={editGame.rentalPrice}
+              onChange={(e) =>
+                setEditGame({
+                  ...editGame,
+                  rentalPrice: e.target.value,
+                })
+              }
+              style={{
+                display: "block",
+                marginBottom: "10px",
+                width: "100%",
+                padding: "10px",
+              }}
+            />
+
+            <input
+              type="number"
+              min="1"
+              placeholder="Quantity"
+              value={editGame.quantity}
+              onChange={(e) =>
+                setEditGame({
+                  ...editGame,
+                  quantity: e.target.value,
+                })
+              }
+              style={{
+                display: "block",
+                marginBottom: "10px",
+                width: "100%",
+                padding: "10px",
+              }}
+            />
+
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) => setEditImage(e.target.files[0])}
+              style={{
+                marginBottom: "10px",
+              }}
+            />
+
+            <button type="submit" style={{ marginRight: "10px" }}>
+              Update Game
+            </button>
+            <button
+              type="button"
+              onClick={handleCancelEdit}
+              style={{
+                backgroundColor: "#f44336",
+                color: "white",
+                padding: "10px 20px",
+                border: "none",
+                borderRadius: "4px",
+                cursor: "pointer",
+              }}
+            >
+              Cancel
+            </button>
+          </form>
+        </div>
+      )}
+
+      <h2>Manage Games</h2>
+      <table border="1" cellPadding="10" width="100%" style={{ marginBottom: "30px" }}>
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Price/Day</th>
+            <th>Quantity</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {games.map((game) => (
+            <tr key={game._id}>
+              <td>{game.title}</td>
+              <td>{game.description || "-"}</td>
+              <td>${game.rentalPrice || 0}</td>
+              <td>{game.quantity || 0}</td>
+              <td>
+                <button
+                  onClick={() => handleEditGame(game)}
+                  style={{
+                    marginRight: "10px",
+                    padding: "5px 15px",
+                    backgroundColor: "#2196F3",
+                    color: "white",
+                    border: "none",
+                    borderRadius: "4px",
+                    cursor: "pointer",
+                  }}
+                >
+                  Edit
+                </button>
+                <button
+                  onClick={() => handleDeleteGame(game._id)}
+                  style={{
+                    padding: "5px 15px",
+                    backgroundColor: "#f44336",
+                    color: "white",
+                    border: "none",
+                    borderRadius: "4px",
+                    cursor: "pointer",
+                  }}
+                >
+                  Delete
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
 
       <h2>Recent Rentals</h2>
 
