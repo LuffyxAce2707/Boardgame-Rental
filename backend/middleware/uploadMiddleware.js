@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const multer = require('multer');
-const cloudinaryStorage = require('multer-storage-cloudinary');
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
 const cloudinary = require('../config/cloudinary');
 
 const hasCloudinaryConfig = Boolean(
@@ -35,23 +35,17 @@ const upload = multer({ storage });
 const uploadImage = (req, res, next) => {
   upload.single('image')(req, res, (err) => {
     if (err) {
-      return res.status(400).json({
-        error: err.message || 'Image upload failed'
-      });
+      return res.status(400).json({ error: err.message || 'Image upload failed' });
     }
 
-    if (req.file && !hasCloudinaryConfig) {
+    if (req.file && hasCloudinaryConfig) {
+      req.file.path = req.file.secure_url || req.file.path; // ✅ fixed
+    } else if (req.file) {
       req.file.path = `/uploads/${req.file.filename}`;
-    }
-
-    if (req.file && hasCloudinaryConfig && req.file.path) {
-      // Cloudinary returns secure_url on the file object
-      req.file.path = req.file.path || req.file.secure_url;
     }
 
     next();
   });
 };
 
-module.exports = upload;
-module.exports.uploadImage = uploadImage;
+module.exports = { upload, uploadImage }; // ✅ fixed
