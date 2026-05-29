@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 
 import { Link, useNavigate } from 'react-router-dom';
 
@@ -8,6 +8,23 @@ const Navbar = () => {
 
   const navigate = useNavigate();
   const { user, logout } = useContext(AuthContext);
+  const [cartCount, setCartCount] = useState(0);
+
+  useEffect(() => {
+    const updateCartCount = () => {
+      const cart = JSON.parse(localStorage.getItem('rentalCart')) || [];
+      setCartCount(
+        cart.reduce((sum, item) => sum + (Number(item.quantity) || 0), 0)
+      );
+    };
+
+    updateCartCount();
+    window.addEventListener('rental-cart-updated', updateCartCount);
+
+    return () => {
+      window.removeEventListener('rental-cart-updated', updateCartCount);
+    };
+  }, []);
 
   const handleLogout = () => {
     logout();
@@ -23,6 +40,8 @@ const Navbar = () => {
         <Link to="/">Home</Link>
 
         <Link to="/rentals/history">Rentals</Link>
+
+        <Link to="/checkout">Checkout ({cartCount})</Link>
 
         {(user?.role === 'admin' || user?.role === 'staff') && (
           <Link to="/admin">Admin</Link>

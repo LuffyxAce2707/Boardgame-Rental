@@ -23,7 +23,7 @@ body {
 
 .games-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(250px, 250px));
   gap: 20px;
 }
 
@@ -37,6 +37,39 @@ body {
   width: 100%;
   height: 250px;
   object-fit: cover;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  margin: 24px 0;
+}
+
+.filters-panel {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+  align-items: end;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 20px;
+}
+
+.filters-panel label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.filters-panel input,
+.filters-panel select {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 10px;
 }
 
 .form-container {
@@ -60,4 +93,53 @@ body {
 button {
   padding: 10px;
   cursor: pointer;
+}
+
+.panel {
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.checkout-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: 20px;
+  align-items: start;
+}
+
+.checkout-item {
+  display: grid;
+  grid-template-columns: 96px minmax(0, 1fr) 90px auto;
+  gap: 16px;
+  align-items: center;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 12px;
+}
+
+.checkout-item img {
+  width: 96px;
+  height: 96px;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+.checkout-item input,
+.panel input,
+.panel select {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 10px;
+  margin: 6px 0 12px;
+}
+
+@media (max-width: 760px) {
+  .checkout-layout,
+  .checkout-item {
+    grid-template-columns: 1fr;
+  }
 }

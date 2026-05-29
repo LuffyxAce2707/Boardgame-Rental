@@ -6,6 +6,12 @@ export const rentGame = async (data) => {
   return response.data;
 };
 
+export const checkoutRentals = async (data) => {
+  const response = await API.post('/rentals/checkout', data);
+
+  return response.data;
+};
+
 export const returnGame = async (rentalId) => {
   const response = await API.put(
     `/rentals/${rentalId}/return`

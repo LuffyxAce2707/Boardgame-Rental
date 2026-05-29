@@ -12,6 +12,13 @@ router.post(
   rentalController.rentGame
 );
 
+// Customer checkout multiple games
+router.post(
+  '/checkout',
+  authMiddleware(['customer', 'admin', 'staff']),
+  rentalController.checkoutRentals
+);
+
 // Return game
 router.put(
   '/:id/return',

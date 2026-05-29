@@ -1,5 +1,6 @@
 const Rental = require('../models/Rental');
 const BoardGame = require('../models/Boardgame');
+const crypto = require('crypto');
 
 exports.rentGame = async (data) => {
 
@@ -7,7 +8,9 @@ exports.rentGame = async (data) => {
     userId,
     gameId,
     quantity,
-    days
+    days,
+    paymentMethod = 'Demo Payment',
+    checkoutId = crypto.randomUUID()
   } = data;
 
   if (!quantity || quantity <= 0) {
@@ -28,6 +31,7 @@ exports.rentGame = async (data) => {
     throw new Error('Not enough stock');
   }
 
+  const rentalAmount = game.rentalPrice * quantity * days;
   const deposit = game.rentalPrice * quantity * 2;
 
   const rental = await Rental.create({
@@ -36,7 +40,12 @@ exports.rentGame = async (data) => {
     quantity,
     rentDate: new Date(),
     dueDate: new Date(Date.now() + days * 86400000),
-    depositAmount: deposit
+    depositAmount: deposit,
+    rentalAmount,
+    amountPaid: rentalAmount + deposit,
+    paymentMethod,
+    paymentStatus: 'Paid',
+    checkoutId
   });
 
   game.availableQuantity -= quantity;
@@ -48,6 +57,100 @@ exports.rentGame = async (data) => {
   await game.save();
 
   return rental;
+};
+
+exports.checkoutRentals = async (data) => {
+  const {
+    userId,
+    items,
+    days,
+    paymentMethod = 'Demo Payment'
+  } = data;
+
+  if (!Array.isArray(items) || items.length === 0) {
+    throw new Error('Checkout requires at least one game');
+  }
+
+  if (!days || days <= 0) {
+    throw new Error('Invalid rental duration');
+  }
+
+  const normalizedItems = items.map((item) => ({
+    gameId: item.gameId,
+    quantity: Number(item.quantity) || 1
+  }));
+
+  const games = await BoardGame.find({
+    _id: {
+      $in: normalizedItems.map((item) => item.gameId)
+    }
+  });
+
+  const gamesById = new Map(
+    games.map((game) => [game._id.toString(), game])
+  );
+
+  for (const item of normalizedItems) {
+    const game = gamesById.get(String(item.gameId));
+
+    if (!game) {
+      throw new Error('One or more games were not found');
+    }
+
+    if (item.quantity <= 0) {
+      throw new Error('Invalid quantity');
+    }
+
+    if (game.availableQuantity < item.quantity) {
+      throw new Error(`Not enough stock for ${game.title}`);
+    }
+  }
+
+  const checkoutId = crypto.randomUUID();
+  const rentals = [];
+  let rentalTotal = 0;
+  let depositTotal = 0;
+
+  for (const item of normalizedItems) {
+    const game = gamesById.get(String(item.gameId));
+    const rentalAmount = game.rentalPrice * item.quantity * days;
+    const deposit = game.rentalPrice * item.quantity * 2;
+
+    const rental = await Rental.create({
+      userId,
+      gameId: game._id,
+      quantity: item.quantity,
+      rentDate: new Date(),
+      dueDate: new Date(Date.now() + days * 86400000),
+      depositAmount: deposit,
+      rentalAmount,
+      amountPaid: rentalAmount + deposit,
+      paymentMethod,
+      paymentStatus: 'Paid',
+      checkoutId
+    });
+
+    game.availableQuantity -= item.quantity;
+
+    if (game.availableQuantity === 0) {
+      game.status = 'OutOfStock';
+    }
+
+    await game.save();
+
+    rentalTotal += rentalAmount;
+    depositTotal += deposit;
+    rentals.push(rental);
+  }
+
+  return {
+    checkoutId,
+    rentals,
+    rentalTotal,
+    depositTotal,
+    amountPaid: rentalTotal + depositTotal,
+    paymentStatus: 'Paid'
+  };
 };
 
 exports.returnGame = async (rentalId) => {
@@ -79,7 +182,7 @@ exports.returnGame = async (rentalId) => {
 
   rental.returnDate = now;
 
-  rental.status = fine > 0 ? 'Late' : 'Returned';
+  rental.status = 'Returned';
 
   rental.fineAmount = fine;
 
@@ -110,6 +213,6 @@ exports.getAllRentals = async () => {
 
   return await Rental.find()
     .populate('userId', 'fullName email')
-    .populate('gameId', 'title imageUrl')
+    .populate('gameId', 'title imageUrl rentalPrice')
     .sort({ createdAt: -1 });
 };

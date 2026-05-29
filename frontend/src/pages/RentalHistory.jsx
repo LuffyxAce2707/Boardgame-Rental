@@ -33,7 +33,8 @@ const RentalHistory = () => {
 
       await returnGame(id);
 
-      fetchRentals();
+      const rentalsData = await fetchRentals();
+      setRentals(rentalsData);
 
     } catch (error) {
 
@@ -79,7 +80,7 @@ const RentalHistory = () => {
           </p>
 
           {
-            rental.status !== 'Returned' && (
+            !rental.returnDate && rental.status !== 'Returned' && (
               <button
                 onClick={() =>
                   handleReturn(rental._id)

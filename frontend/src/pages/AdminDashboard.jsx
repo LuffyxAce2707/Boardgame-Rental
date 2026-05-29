@@ -21,6 +21,20 @@ const AdminDashboard = () => {
     quantity: "1",
   });
 
+  const emptyBulkGame = {
+    title: "",
+    description: "",
+    category: "",
+    rentalPrice: "",
+    quantity: "1",
+  };
+
+  const [bulkGames, setBulkGames] = useState([
+    { ...emptyBulkGame },
+    { ...emptyBulkGame },
+    { ...emptyBulkGame },
+  ]);
+
   const [image, setImage] = useState(null);
 
   const [editingGameId, setEditingGameId] = useState(null);
@@ -121,7 +135,7 @@ const AdminDashboard = () => {
       rentalPrice: game.rentalPrice || "",
       quantity: game.quantity || 1,
       category: game.category || "",
-      imageUrl: game.image || "",
+      imageUrl: game.imageUrl || "",
     });
     setEditImage(null);
   };
@@ -184,16 +198,98 @@ const AdminDashboard = () => {
     }
   };
 
+  const updateBulkGame = (index, field, value) => {
+    setBulkGames((currentGames) =>
+      currentGames.map((game, gameIndex) =>
+        gameIndex === index
+          ? {
+              ...game,
+              [field]: value,
+            }
+          : game
+      )
+    );
+  };
+
+  const addBulkRow = () => {
+    setBulkGames((currentGames) => [...currentGames, { ...emptyBulkGame }]);
+  };
+
+  const removeBulkRow = (index) => {
+    setBulkGames((currentGames) =>
+      currentGames.length === 1
+        ? [{ ...emptyBulkGame }]
+        : currentGames.filter((_, gameIndex) => gameIndex !== index)
+    );
+  };
+
+  const handleBulkCreateGames = async (e) => {
+    e.preventDefault();
+
+    const gamesToCreate = bulkGames.filter((game) => game.title.trim());
+
+    if (gamesToCreate.length === 0) {
+      alert("Add at least one game title");
+      return;
+    }
+
+    try {
+      await Promise.all(
+        gamesToCreate.map((game) =>
+          API.post("/boardgames", {
+            title: game.title,
+            description: game.description,
+            category: game.category,
+            rentalPrice: game.rentalPrice,
+            quantity: game.quantity,
+          })
+        )
+      );
+
+      alert(`${gamesToCreate.length} games created`);
+      setBulkGames([
+        { ...emptyBulkGame },
+        { ...emptyBulkGame },
+        { ...emptyBulkGame },
+      ]);
+      await refreshDashboard();
+    } catch (error) {
+      console.error(error);
+      alert(
+        error.response?.data?.error ||
+          error.response?.data?.message ||
+          "Bulk create failed"
+      );
+    }
+  };
+
+  const handleReturnRental = async (rentalId) => {
+    try {
+      await API.put(`/rentals/${rentalId}/return`);
+      alert("Rental returned successfully");
+      await refreshDashboard();
+    } catch (error) {
+      console.error(error);
+      alert(
+        error.response?.data?.error ||
+          error.response?.data?.message ||
+          "Return failed"
+      );
+    }
+  };
+
   const totalGames = games.length;
 
   const totalRentals = rentals.length;
 
   const activeRentals = rentals.filter(
-    (rental) => rental.status !== "Returned",
+    (rental) => !rental.returnDate && rental.status !== "Returned",
   ).length;
 
   const overdueRentals = rentals.filter(
-    (rental) => rental.status === "Late",
+    (rental) =>
+      !rental.returnDate &&
+      (rental.status === "Late" || new Date(rental.dueDate) < new Date()),
   ).length;
 
   if (!user) {
@@ -317,6 +413,92 @@ const AdminDashboard = () => {
         />
 
         <button type="submit">Add Game</button>
+      </form>
+
+      <form
+        onSubmit={handleBulkCreateGames}
+        style={{
+          marginBottom: "30px",
+          border: "1px solid gray",
+          padding: "20px",
+          borderRadius: "10px",
+          backgroundColor: "white",
+        }}
+      >
+        <h2>Add Multiple Boardgames</h2>
+
+        {bulkGames.map((game, index) => (
+          <div
+            key={`bulk-game-${index}`}
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1.2fr 1.5fr 1fr 120px 100px auto",
+              gap: "10px",
+              marginBottom: "10px",
+              alignItems: "center",
+            }}
+          >
+            <input
+              type="text"
+              placeholder="Title"
+              value={game.title}
+              onChange={(e) => updateBulkGame(index, "title", e.target.value)}
+              style={{ padding: "10px" }}
+            />
+
+            <input
+              type="text"
+              placeholder="Description"
+              value={game.description}
+              onChange={(e) =>
+                updateBulkGame(index, "description", e.target.value)
+              }
+              style={{ padding: "10px" }}
+            />
+
+            <input
+              type="text"
+              placeholder="Category"
+              value={game.category}
+              onChange={(e) =>
+                updateBulkGame(index, "category", e.target.value)
+              }
+              style={{ padding: "10px" }}
+            />
+
+            <input
+              type="number"
+              min="0"
+              placeholder="Price"
+              value={game.rentalPrice}
+              onChange={(e) =>
+                updateBulkGame(index, "rentalPrice", e.target.value)
+              }
+              style={{ padding: "10px" }}
+            />
+
+            <input
+              type="number"
+              min="1"
+              placeholder="Qty"
+              value={game.quantity}
+              onChange={(e) =>
+                updateBulkGame(index, "quantity", e.target.value)
+              }
+              style={{ padding: "10px" }}
+            />
+
+            <button type="button" onClick={() => removeBulkRow(index)}>
+              Remove
+            </button>
+          </div>
+        ))}
+
+        <button type="button" onClick={addBulkRow} style={{ marginRight: "10px" }}>
+          Add Row
+        </button>
+
+        <button type="submit">Create All Games</button>
       </form>
 
       <div
@@ -570,6 +752,14 @@ const AdminDashboard = () => {
             <th>Due Date</th>
 
             <th>Fine</th>
+
+            <th>Paid</th>
+
+            <th>Payment</th>
+
+            <th>Checkout</th>
+
+            <th>Actions</th>
           </tr>
         </thead>
 
@@ -585,6 +775,25 @@ const AdminDashboard = () => {
               <td>{new Date(rental.dueDate).toLocaleDateString()}</td>
 
               <td>${rental.fineAmount}</td>
+
+              <td>${rental.amountPaid || 0}</td>
+
+              <td>{rental.paymentStatus || "Pending"}</td>
+
+              <td>{rental.checkoutId || "-"}</td>
+
+              <td>
+                {!rental.returnDate && rental.status !== "Returned" ? (
+                  <button
+                    type="button"
+                    onClick={() => handleReturnRental(rental._id)}
+                  >
+                    Mark Returned
+                  </button>
+                ) : (
+                  "Returned"
+                )}
+              </td>
             </tr>
           ))}
         </tbody>

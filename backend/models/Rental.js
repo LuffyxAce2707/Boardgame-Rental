@@ -49,6 +49,32 @@ const rentalSchema = new mongoose.Schema(
     fineAmount: {
       type: Number,
       default: 0
+    },
+
+    rentalAmount: {
+      type: Number,
+      default: 0
+    },
+
+    amountPaid: {
+      type: Number,
+      default: 0
+    },
+
+    paymentMethod: {
+      type: String,
+      enum: ['Cash', 'Card', 'Bank Transfer', 'Demo Payment'],
+      default: 'Demo Payment'
+    },
+
+    paymentStatus: {
+      type: String,
+      enum: ['Pending', 'Paid', 'Refunded'],
+      default: 'Pending'
+    },
+
+    checkoutId: {
+      type: String
     }
   },
   {

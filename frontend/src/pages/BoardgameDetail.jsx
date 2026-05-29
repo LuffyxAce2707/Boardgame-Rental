@@ -39,6 +39,39 @@ const BoardgameDetail = () => {
     setGame(gameData);
   };
 
+  const addToCart = () => {
+    const currentCart = JSON.parse(localStorage.getItem('rentalCart')) || [];
+    const existingItem = currentCart.find((item) => item._id === game._id);
+
+    const nextCart = existingItem
+      ? currentCart.map((item) =>
+          item._id === game._id
+            ? {
+                ...item,
+                quantity: Math.min(
+                  item.quantity + 1,
+                  game.availableQuantity || 1
+                )
+              }
+            : item
+        )
+      : [
+          ...currentCart,
+          {
+            _id: game._id,
+            title: game.title,
+            imageUrl: game.imageUrl,
+            rentalPrice: game.rentalPrice,
+            availableQuantity: game.availableQuantity,
+            quantity: 1
+          }
+        ];
+
+    localStorage.setItem('rentalCart', JSON.stringify(nextCart));
+    window.dispatchEvent(new Event('rental-cart-updated'));
+    alert('Added to checkout');
+  };
+
   const handleRent = async () => {
 
     try {
@@ -157,6 +190,21 @@ const BoardgameDetail = () => {
             : 'Rent Now'
         }
 
+      </button>
+
+      <button
+        onClick={addToCart}
+        disabled={game.availableQuantity <= 0}
+        style={{
+          padding: '10px 20px',
+          marginLeft: '10px',
+          cursor:
+            game.availableQuantity <= 0
+              ? 'not-allowed'
+              : 'pointer'
+        }}
+      >
+        Add to Checkout
       </button>
 
     </div>

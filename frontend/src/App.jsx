@@ -13,6 +13,7 @@ import BoardgameDetail from './pages/BoardgameDetail';
 import Rentals from './pages/Rentals';
 import AdminDashboard from './pages/AdminDashboard';
 import RentalHistory from './pages/RentalHistory';
+import Checkout from './pages/Checkout';
 
 function App() {
 
@@ -36,6 +37,8 @@ function App() {
         <Route path="/admin" element={<AdminDashboard />} />
 
         <Route path="/rentals/history" element={<RentalHistory />} />
+
+        <Route path="/checkout" element={<Checkout />} />
 
       </Routes>
     </BrowserRouter>

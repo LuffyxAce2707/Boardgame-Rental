@@ -70,3 +70,23 @@ exports.getAllRentals = async (req, res) => {
     });
   }
 };
+
+exports.checkoutRentals = async (req, res) => {
+  try {
+
+    const result = await rentalService.checkoutRentals({
+      ...req.body,
+      userId: req.user.id
+    });
+
+    res.status(201).json({
+      success: true,
+      data: result
+    });
+
+  } catch (err) {
+    res.status(500).json({
+      error: err.message
+    });
+  }
+};

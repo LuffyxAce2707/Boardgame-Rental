@@ -37,11 +37,12 @@ const parseGameBody = (body, file) => {
 
 exports.getAllGames = async (req, res) => {
   try {
-    const games = await inventoryService.getAllGames(req.query);
+    const result = await inventoryService.getAllGames(req.query);
 
     res.json({
       success: true,
-      data: games
+      data: result.games,
+      pagination: result.pagination
     });
   } catch (err) {
     res.status(500).json({
@@ -85,6 +86,10 @@ exports.searchGames = async (req, res) => {
 exports.updateGame = async (req, res) => {
   try {
     const updateData = parseGameBody(req.body, req.file);
+
+    if (!req.file && !req.body.imageUrl) {
+      delete updateData.imageUrl;
+    }
 
     const updatedGame = await inventoryService.updateGame(
       req.params.id,
