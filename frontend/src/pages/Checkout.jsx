@@ -12,7 +12,7 @@ const Checkout = () => {
   const { user } = useContext(AuthContext);
   const [cart, setCart] = useState(loadCart);
   const [days, setDays] = useState(3);
-  const [paymentMethod, setPaymentMethod] = useState('Demo Payment');
+  const [paymentMethod, setPaymentMethod] = useState('Cash');
   const [checkingOut, setCheckingOut] = useState(false);
   const [receipt, setReceipt] = useState(null);
 
@@ -160,7 +160,6 @@ const Checkout = () => {
                 value={paymentMethod}
                 onChange={(event) => setPaymentMethod(event.target.value)}
               >
-                <option>Demo Payment</option>
                 <option>Cash</option>
                 <option>Card</option>
                 <option>Bank Transfer</option>

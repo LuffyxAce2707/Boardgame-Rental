@@ -9,7 +9,7 @@ exports.rentGame = async (data) => {
     gameId,
     quantity,
     days,
-    paymentMethod = 'Demo Payment',
+    paymentMethod = 'Cash',
     checkoutId = crypto.randomUUID()
   } = data;
 
@@ -64,7 +64,7 @@ exports.checkoutRentals = async (data) => {
     userId,
     items,
     days,
-    paymentMethod = 'Demo Payment'
+    paymentMethod = 'Cash'
   } = data;
 
   if (!Array.isArray(items) || items.length === 0) {

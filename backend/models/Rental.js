@@ -63,8 +63,8 @@ const rentalSchema = new mongoose.Schema(
 
     paymentMethod: {
       type: String,
-      enum: ['Cash', 'Card', 'Bank Transfer', 'Demo Payment'],
-      default: 'Demo Payment'
+      enum: ['Cash', 'Card', 'Bank Transfer'],
+      default: 'Cash'
     },
 
     paymentStatus: {
