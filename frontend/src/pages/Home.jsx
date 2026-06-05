@@ -20,7 +20,7 @@ const Home = () => {
   });
   const [pagination, setPagination] = useState({
     page: 1,
-    limit: 5,
+    limit: 8,
     total: 0,
     totalPages: 1
   });
@@ -33,7 +33,7 @@ const Home = () => {
         const res = await API.get('/boardgames', {
           params: {
             page,
-            limit: 5,
+            limit: 8,
             ...Object.fromEntries(
               Object.entries(filters).filter(([, value]) => value !== '')
             )
@@ -43,7 +43,7 @@ const Home = () => {
         setPagination(
           res.data.pagination || {
             page,
-            limit: 5,
+            limit: 8,
             total: res.data.data?.length || 0,
             totalPages: 1
           }
