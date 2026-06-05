@@ -13,7 +13,7 @@ exports.register = async (req, res) => {
         errors: errors.array()
       });
     }
-    const { fullName, email, password } = req.body;
+    const { fullName, email, phone, password } = req.body;
 
     const normalizedEmail = email.trim().toLowerCase();
 
@@ -32,6 +32,7 @@ exports.register = async (req, res) => {
       fullName,
       username: normalizedEmail,
       email: normalizedEmail,
+      phone,
       password: hashedPassword
     });
 

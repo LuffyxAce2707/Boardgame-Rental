@@ -11,7 +11,9 @@ const Register = () => {
   const [form, setForm] = useState({
     fullName: '',
     email: '',
-    password: ''
+    phone: '',
+    password: '',
+    confirmPassword: ''
   });
 
   const handleSubmit = async (e) => {
@@ -59,12 +61,34 @@ const Register = () => {
         />
 
         <input
+          type="tel"
+          placeholder="Phone"
+          onChange={(e) =>
+            setForm({
+              ...form,
+              phone: e.target.value
+            })
+          }
+        />
+
+        <input
           type="password"
           placeholder="Password"
           onChange={(e) =>
             setForm({
               ...form,
               password: e.target.value
+            })
+          }
+        />
+
+        <input
+          type="password"
+          placeholder="Confirm Password"
+          onChange={(e) =>
+            setForm({
+              ...form,
+              confirmPassword: e.target.value
             })
           }
         />
