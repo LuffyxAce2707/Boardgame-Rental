@@ -1,5 +1,5 @@
 import { useContext, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import API from '../api/axios';
 import { AuthContext } from '../context/AuthContext';
 
@@ -74,6 +74,10 @@ const Login = () => {
           Login
         </button>
       </form>
+
+      <p>
+        Don't have an account? <Link to="/register">Sign Up</Link>
+      </p>
     </div>
   );
 };
