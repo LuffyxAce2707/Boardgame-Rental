@@ -26,6 +26,20 @@ router.put(
   rentalController.returnGame
 );
 
+// Extend rental
+router.put(
+  '/:id/extend',
+  authMiddleware(['customer', 'admin', 'staff']),
+  rentalController.extendRental
+);
+
+// Review returned rental
+router.put(
+  '/:id/review',
+  authMiddleware(['customer', 'admin', 'staff']),
+  rentalController.reviewRental
+);
+
 // Rental history
 router.get(
   '/history',

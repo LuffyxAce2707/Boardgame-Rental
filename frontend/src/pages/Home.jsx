@@ -9,6 +9,7 @@ const Home = () => {
   const [games, setGames] = useState([]);
   const [page, setPage] = useState(1);
   const [filters, setFilters] = useState({
+    keyword: '',
     category: '',
     difficulty: '',
     players: '',
@@ -67,6 +68,7 @@ const Home = () => {
 
   const clearFilters = () => {
     setFilters({
+      keyword: '',
       category: '',
       difficulty: '',
       players: '',
@@ -79,11 +81,64 @@ const Home = () => {
   };
 
   return (
-    <div className="container">
+    <div>
+      <section className="home-hero">
+        <div className="home-hero-content">
+          <p className="eyebrow">Boardgame Rental</p>
+          <h1>Rent cozy classics and new hits, picked up in minutes</h1>
+          <p className="hero-copy">
+            Vintage vibes, wooden pieces, and ready-to-play boardgames
+            delivered to your doorstep or picked up at our cafe counter.
+          </p>
 
-      <h1>Boardgame Collection</h1>
+          <div className="hero-search">
+            <input
+              type="text"
+              placeholder="Search titles, genres, players"
+              value={filters.keyword}
+              onChange={(e) => updateFilter('keyword', e.target.value)}
+            />
+            <button type="button" onClick={() => setPage(1)}>
+              Search
+            </button>
+          </div>
 
-      <div className="filters-panel">
+          <div className="quick-chips">
+            <button type="button" onClick={() => clearFilters()}>
+              Today's Deals
+            </button>
+            <button type="button" onClick={() => updateFilter('players', '2')}>
+              2 Players
+            </button>
+            <button
+              type="button"
+              onClick={() => updateFilter('category', 'Family')}
+            >
+              Family Friendly
+            </button>
+            <button
+              type="button"
+              onClick={() => updateFilter('category', 'Strategy')}
+            >
+              Strategy
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <main className="container">
+        <div className="section-heading">
+          <div>
+            <p className="eyebrow">Featured Rentals</p>
+            <h2>Tonight's Picks</h2>
+          </div>
+          <p>
+            Hyper-realistic wooden boxes and meeple charm, ready to reserve in
+            one tap.
+          </p>
+        </div>
+
+        <div className="filters-panel">
         <label>
           Category
           <input
@@ -167,48 +222,49 @@ const Home = () => {
         <button type="button" onClick={clearFilters}>
           Clear
         </button>
-      </div>
+        </div>
 
-      {loading ? (
-        <h2>Loading...</h2>
-      ) : (
-        <>
-          {games.length === 0 ? (
-            <p>No boardgames match the selected filters.</p>
-          ) : (
-            <div className="games-grid">
-              {games.map((game) => (
-                <GameCard
-                  key={game._id}
-                  game={game}
-                />
-              ))}
+        {loading ? (
+          <h2>Loading...</h2>
+        ) : (
+          <>
+            {games.length === 0 ? (
+              <p>No boardgames match the selected filters.</p>
+            ) : (
+              <div className="games-grid">
+                {games.map((game) => (
+                  <GameCard
+                    key={game._id}
+                    game={game}
+                  />
+                ))}
+              </div>
+            )}
+
+            <div className="pagination">
+              <button
+                type="button"
+                onClick={() => setPage((currentPage) => currentPage - 1)}
+                disabled={page <= 1}
+              >
+                Previous
+              </button>
+
+              <span>
+                Page {pagination.page} of {pagination.totalPages}
+              </span>
+
+              <button
+                type="button"
+                onClick={() => setPage((currentPage) => currentPage + 1)}
+                disabled={page >= pagination.totalPages}
+              >
+                Next
+              </button>
             </div>
-          )}
-
-          <div className="pagination">
-            <button
-              type="button"
-              onClick={() => setPage((currentPage) => currentPage - 1)}
-              disabled={page <= 1}
-            >
-              Previous
-            </button>
-
-            <span>
-              Page {pagination.page} of {pagination.totalPages}
-            </span>
-
-            <button
-              type="button"
-              onClick={() => setPage((currentPage) => currentPage + 1)}
-              disabled={page >= pagination.totalPages}
-            >
-              Next
-            </button>
-          </div>
-        </>
-      )}
+          </>
+        )}
+      </main>
     </div>
   );
 };

@@ -34,9 +34,9 @@ const Navbar = () => {
   return (
     <nav className="navbar">
 
-      <h2>Boardgame Rental</h2>
+      <Link className="brand" to="/">Boardgame Rental</Link>
 
-      <div>
+      <div className="nav-links">
         <Link to="/">Home</Link>
 
         <Link to="/rentals/history">Rentals</Link>

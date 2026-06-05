@@ -9,7 +9,7 @@ exports.rentGame = async (data) => {
     gameId,
     quantity,
     days,
-    paymentMethod = 'Cash',
+    paymentMethod = 'Bank Transfer',
     checkoutId = crypto.randomUUID()
   } = data;
 
@@ -64,7 +64,7 @@ exports.checkoutRentals = async (data) => {
     userId,
     items,
     days,
-    paymentMethod = 'Cash'
+    paymentMethod = 'Bank Transfer'
   } = data;
 
   if (!Array.isArray(items) || items.length === 0) {
@@ -215,4 +215,71 @@ exports.getAllRentals = async () => {
     .populate('userId', 'fullName email')
     .populate('gameId', 'title imageUrl rentalPrice')
     .sort({ createdAt: -1 });
+};
+
+exports.extendRental = async (rentalId, data) => {
+  const days = Number(data.days) || 0;
+
+  if (days <= 0) {
+    throw new Error('Invalid extension duration');
+  }
+
+  const rental = await Rental.findById(rentalId);
+
+  if (!rental) {
+    throw new Error('Rental not found');
+  }
+
+  if (rental.status === 'Returned' || rental.returnDate) {
+    throw new Error('Returned rentals cannot be extended');
+  }
+
+  const game = await BoardGame.findById(rental.gameId);
+
+  if (!game) {
+    throw new Error('Game not found');
+  }
+
+  const extensionAmount = game.rentalPrice * rental.quantity * days;
+
+  rental.dueDate = new Date(
+    rental.dueDate.getTime() + days * 86400000
+  );
+  rental.rentalAmount += extensionAmount;
+  rental.amountPaid += extensionAmount;
+
+  await rental.save();
+
+  return {
+    rental,
+    extensionAmount,
+    newDueDate: rental.dueDate
+  };
+};
+
+exports.reviewRental = async (rentalId, data) => {
+  const rating = Number(data.rating);
+  const reviewText = String(data.reviewText || '').trim();
+
+  if (!rating || rating < 1 || rating > 5) {
+    throw new Error('Rating must be between 1 and 5');
+  }
+
+  const rental = await Rental.findById(rentalId);
+
+  if (!rental) {
+    throw new Error('Rental not found');
+  }
+
+  if (!rental.returnDate && rental.status !== 'Returned') {
+    throw new Error('You can review a game after returning it');
+  }
+
+  rental.rating = rating;
+  rental.reviewText = reviewText;
+  rental.reviewedAt = new Date();
+
+  await rental.save();
+
+  return rental;
 };

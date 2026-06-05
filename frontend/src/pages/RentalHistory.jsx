@@ -1,13 +1,17 @@
 import { useEffect, useMemo, useState } from 'react';
 
 import {
+  extendRental,
   getRentalHistory,
+  reviewRental,
   returnGame
 } from '../services/rental.service';
 
 const RentalHistory = () => {
 
   const [rentals, setRentals] = useState([]);
+  const [extensionDays, setExtensionDays] = useState({});
+  const [reviews, setReviews] = useState({});
 
   const fetchRentals = async () => {
     const response = await getRentalHistory();
@@ -47,6 +51,60 @@ const RentalHistory = () => {
 
     }
 
+  };
+
+  const handleExtend = async (id) => {
+    const days = Number(extensionDays[id]) || 0;
+
+    try {
+      await extendRental(id, days);
+
+      const rentalsData = await fetchRentals();
+      setRentals(rentalsData);
+      setExtensionDays({
+        ...extensionDays,
+        [id]: ''
+      });
+    } catch (error) {
+      console.error(error);
+      alert(
+        error.response?.data?.error ||
+          error.response?.data?.message ||
+          'Extend rental failed'
+      );
+    }
+  };
+
+  const updateReview = (id, field, value) => {
+    setReviews((currentReviews) => ({
+      ...currentReviews,
+      [id]: {
+        rating: currentReviews[id]?.rating || '5',
+        reviewText: currentReviews[id]?.reviewText || '',
+        [field]: value
+      }
+    }));
+  };
+
+  const handleReview = async (id) => {
+    const review = reviews[id] || {};
+
+    try {
+      await reviewRental(id, {
+        rating: review.rating || 5,
+        reviewText: review.reviewText || ''
+      });
+
+      const rentalsData = await fetchRentals();
+      setRentals(rentalsData);
+    } catch (error) {
+      console.error(error);
+      alert(
+        error.response?.data?.error ||
+          error.response?.data?.message ||
+          'Save review failed'
+      );
+    }
   };
 
   const rentalOrders = useMemo(() => {
@@ -146,17 +204,87 @@ const RentalHistory = () => {
                   <div>
                     <p>Status: {rental.status}</p>
                     <p>Fine: ${rental.fineAmount}</p>
+                    <p>Paid: ${rental.amountPaid || 0}</p>
                   </div>
 
                   {!rental.returnDate && rental.status !== 'Returned' ? (
-                    <button
-                      type="button"
-                      onClick={() => handleReturn(rental._id)}
-                    >
-                      Return Game
-                    </button>
+                    <div className="rental-actions">
+                      <label>
+                        Extend days
+                        <input
+                          type="number"
+                          min="1"
+                          value={extensionDays[rental._id] || ''}
+                          onChange={(event) =>
+                            setExtensionDays({
+                              ...extensionDays,
+                              [rental._id]: event.target.value
+                            })
+                          }
+                        />
+                      </label>
+                      <button
+                        type="button"
+                        onClick={() => handleExtend(rental._id)}
+                      >
+                        Extend
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleReturn(rental._id)}
+                      >
+                        Return Game
+                      </button>
+                    </div>
                   ) : (
-                    <span>Returned</span>
+                    <div className="review-box">
+                      <span>Returned</span>
+                      {rental.rating ? (
+                        <div>
+                          <p>Rating: {rental.rating}/5</p>
+                          <p>{rental.reviewText || 'No review text.'}</p>
+                        </div>
+                      ) : (
+                        <>
+                          <label>
+                            Rating
+                            <select
+                              value={reviews[rental._id]?.rating || '5'}
+                              onChange={(event) =>
+                                updateReview(
+                                  rental._id,
+                                  'rating',
+                                  event.target.value
+                                )
+                              }
+                            >
+                              <option value="5">5</option>
+                              <option value="4">4</option>
+                              <option value="3">3</option>
+                              <option value="2">2</option>
+                              <option value="1">1</option>
+                            </select>
+                          </label>
+                          <textarea
+                            placeholder="Write a review after playing"
+                            value={reviews[rental._id]?.reviewText || ''}
+                            onChange={(event) =>
+                              updateReview(
+                                rental._id,
+                                'reviewText',
+                                event.target.value
+                              )
+                            }
+                          />
+                          <button
+                            type="button"
+                            onClick={() => handleReview(rental._id)}
+                          >
+                            Save Review
+                          </button>
+                        </>
+                      )}
+                    </div>
                   )}
                 </div>
               ))}

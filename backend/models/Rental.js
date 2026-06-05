@@ -63,8 +63,8 @@ const rentalSchema = new mongoose.Schema(
 
     paymentMethod: {
       type: String,
-      enum: ['Cash', 'Card', 'Bank Transfer'],
-      default: 'Cash'
+      enum: ['Card', 'Bank Transfer'],
+      default: 'Bank Transfer'
     },
 
     paymentStatus: {
@@ -75,6 +75,21 @@ const rentalSchema = new mongoose.Schema(
 
     checkoutId: {
       type: String
+    },
+
+    rating: {
+      type: Number,
+      min: 1,
+      max: 5
+    },
+
+    reviewText: {
+      type: String,
+      default: ''
+    },
+
+    reviewedAt: {
+      type: Date
     }
   },
   {

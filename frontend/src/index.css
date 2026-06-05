@@ -1,42 +1,295 @@
+:root {
+  color: #273016;
+  background: #f5eddd;
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
-  font-family: Arial, sans-serif;
-  background: #f4f4f4;
+  min-width: 320px;
+  background: linear-gradient(180deg, #f8f1e4 0%, #efe1c9 100%);
+}
+
+body,
+button,
+input,
+select,
+textarea {
+  font-family:
+    Inter,
+    Arial,
+    sans-serif;
+}
+
+a {
+  color: inherit;
 }
 
 .navbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
   display: flex;
   justify-content: space-between;
-  padding: 20px;
-  background: #222;
+  align-items: center;
+  gap: 18px;
+  padding: 18px clamp(18px, 4vw, 56px);
+  background: rgba(45, 54, 23, 0.94);
+  color: #fff7e6;
+  border-bottom: 1px solid rgba(255, 247, 230, 0.18);
+}
+
+.brand {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.35rem;
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 10px;
 }
 
 .navbar a {
-  color: white;
-  margin-left: 15px;
+  color: #fff7e6;
   text-decoration: none;
 }
 
+.nav-links a {
+  padding: 8px 12px;
+  border-radius: 999px;
+}
+
+.nav-links a:hover {
+  background: rgba(255, 247, 230, 0.12);
+}
+
+.nav-links button {
+  min-height: 34px;
+  padding: 8px 12px;
+  background: #f4c06f;
+  border-color: #f4c06f;
+  color: #273016;
+}
+
 .container {
-  padding: 20px;
+  width: min(1180px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 32px 0;
+}
+
+.home-hero {
+  min-height: 500px;
+  display: flex;
+  align-items: center;
+  padding: 72px clamp(20px, 7vw, 96px);
+  background:
+    linear-gradient(120deg, rgba(39, 48, 22, 0.94), rgba(67, 70, 36, 0.68)),
+    url("/hero-boardgame.webp") center right 10% / min(380px, 42vw) auto no-repeat;
+  color: #fff7e6;
+}
+
+.home-hero-content {
+  width: min(760px, 100%);
+}
+
+.eyebrow {
+  margin: 0 0 10px;
+  color: #b96543;
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.home-hero .eyebrow {
+  color: #f4c06f;
+}
+
+.home-hero h1,
+.section-heading h2 {
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 700;
+  line-height: 1.03;
+}
+
+.home-hero h1 {
+  max-width: 720px;
+  margin: 0;
+  font-size: clamp(2.6rem, 8vw, 5.8rem);
+}
+
+.hero-copy {
+  max-width: 620px;
+  margin: 22px 0 28px;
+  color: #f4e6cf;
+  font-size: clamp(1rem, 2vw, 1.2rem);
+  line-height: 1.65;
+}
+
+.hero-search {
+  display: flex;
+  width: min(720px, 100%);
+  padding: 8px;
+  background: #fff9ee;
+  border-radius: 999px;
+  box-shadow: 0 18px 40px rgba(20, 21, 11, 0.24);
+}
+
+.hero-search input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  color: #273016;
+  padding: 13px 18px;
+  font-size: 1rem;
+}
+
+.hero-search input:focus {
+  outline: 0;
+}
+
+.quick-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.quick-chips button {
+  background: rgba(255, 247, 230, 0.12);
+  color: #fff7e6;
+  border-color: rgba(255, 247, 230, 0.24);
+}
+
+.section-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  gap: 24px;
+  margin-bottom: 20px;
+}
+
+.section-heading h2 {
+  margin: 0;
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  color: #273016;
+}
+
+.section-heading > p {
+  max-width: 440px;
+  margin: 0;
+  color: #6f604c;
+  line-height: 1.6;
 }
 
 .games-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(250px, 250px));
-  gap: 20px;
+  gap: 22px;
 }
 
 .game-card {
-  background: white;
-  padding: 15px;
-  border-radius: 10px;
+  overflow: hidden;
+  background: #fff9ee;
+  border: 1px solid #dfc9a7;
+  border-radius: 8px;
+  box-shadow: 0 18px 34px rgba(74, 55, 28, 0.12);
 }
 
-.game-card img {
+.game-card-media {
+  position: relative;
+  background: #e8d4b5;
+}
+
+.game-card-media img {
+  display: block;
   width: 100%;
-  height: 250px;
+  aspect-ratio: 1 / 1;
   object-fit: cover;
+}
+
+.game-card-media span {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  padding: 6px 10px;
+  background: rgba(255, 249, 238, 0.94);
+  color: #273016;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+.game-card-body {
+  padding: 16px;
+}
+
+.game-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  min-height: 26px;
+}
+
+.game-tags span {
+  padding: 5px 8px;
+  background: #ead8b9;
+  color: #73523a;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+.game-card h3 {
+  margin: 12px 0 8px;
+  color: #273016;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.28rem;
+}
+
+.game-card-meta {
+  min-height: 20px;
+  margin: 0;
+  color: #766850;
+  font-size: 0.9rem;
+}
+
+.game-price {
+  margin: 14px 0;
+  color: #b96543;
+  font-size: 1.2rem;
+  font-weight: 800;
+}
+
+.game-card-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  align-items: center;
+}
+
+.game-card-actions a {
+  display: grid;
+  place-items: center;
+  min-height: 40px;
+  border: 1px solid #c7ad84;
+  border-radius: 999px;
+  text-decoration: none;
+  color: #273016;
+  font-weight: 700;
 }
 
 .pagination {
@@ -44,7 +297,7 @@ body {
   justify-content: center;
   align-items: center;
   gap: 12px;
-  margin: 24px 0;
+  margin: 30px 0 10px;
 }
 
 .filters-panel {
@@ -52,32 +305,47 @@ body {
   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   gap: 12px;
   align-items: end;
-  background: white;
-  border: 1px solid #ddd;
+  background: rgba(255, 249, 238, 0.9);
+  border: 1px solid #dfc9a7;
   border-radius: 8px;
   padding: 16px;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
+  box-shadow: 0 12px 24px rgba(74, 55, 28, 0.08);
 }
 
 .filters-panel label {
   display: flex;
   flex-direction: column;
   gap: 6px;
+  color: #5d513d;
+  font-size: 0.82rem;
+  font-weight: 800;
 }
 
 .filters-panel input,
-.filters-panel select {
+.filters-panel select,
+.form-container input,
+.form-container textarea,
+.panel input,
+.panel select,
+.panel textarea {
   box-sizing: border-box;
   width: 100%;
-  padding: 10px;
+  padding: 11px 12px;
+  color: #273016;
+  background: #fffdf6;
+  border: 1px solid #d7bf96;
+  border-radius: 8px;
 }
 
 .form-container {
   max-width: 400px;
   margin: 50px auto;
-  background: white;
-  padding: 20px;
-  border-radius: 10px;
+  background: #fff9ee;
+  border: 1px solid #dfc9a7;
+  padding: 24px;
+  border-radius: 8px;
+  box-shadow: 0 18px 34px rgba(74, 55, 28, 0.12);
 }
 
 .form-container form {
@@ -86,20 +354,33 @@ body {
   gap: 15px;
 }
 
-.form-container input {
-  padding: 10px;
+button {
+  min-height: 40px;
+  padding: 10px 16px;
+  cursor: pointer;
+  color: #fff9ee;
+  background: #b96543;
+  border: 1px solid #b96543;
+  border-radius: 999px;
+  font-weight: 800;
 }
 
-button {
-  padding: 10px;
-  cursor: pointer;
+button:hover:not(:disabled) {
+  background: #945136;
+  border-color: #945136;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
 }
 
 .panel {
-  background: white;
-  border: 1px solid #ddd;
+  background: #fff9ee;
+  border: 1px solid #dfc9a7;
   border-radius: 8px;
   padding: 16px;
+  box-shadow: 0 18px 34px rgba(74, 55, 28, 0.12);
 }
 
 .checkout-layout {
@@ -114,8 +395,8 @@ button {
   grid-template-columns: 96px minmax(0, 1fr) 90px auto;
   gap: 16px;
   align-items: center;
-  background: white;
-  border: 1px solid #ddd;
+  background: #fff9ee;
+  border: 1px solid #dfc9a7;
   border-radius: 8px;
   padding: 12px;
   margin-bottom: 12px;
@@ -128,28 +409,68 @@ button {
   border-radius: 6px;
 }
 
-.checkout-item input,
-.panel input,
-.panel select {
-  box-sizing: border-box;
+.bank-transfer-box,
+.card-payment-box,
+.payment-failed,
+.processing-payment {
+  border: 1px solid #dfc9a7;
+  border-radius: 8px;
+  padding: 12px;
+  margin: 12px 0;
+  background: #fffdf6;
+}
+
+.bank-transfer-qr {
+  display: block;
   width: 100%;
-  padding: 10px;
-  margin: 6px 0 12px;
+  max-width: 260px;
+  max-height: 360px;
+  object-fit: contain;
+  margin: 0 auto 12px;
+  border-radius: 8px;
+}
+
+.hosted-card-frame {
+  border: 1px solid #d7bf96;
+  border-radius: 8px;
+  padding: 12px;
+  background: #f7ead5;
+}
+
+.payment-error,
+.payment-failed {
+  color: #b00020;
+}
+
+.spinner {
+  width: 28px;
+  height: 28px;
+  border: 4px solid #dfc9a7;
+  border-top-color: #273016;
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .rental-order {
-  background: white;
-  border: 1px solid #ddd;
+  background: #fff9ee;
+  border: 1px solid #dfc9a7;
   border-radius: 8px;
   padding: 16px;
   margin-bottom: 16px;
+  box-shadow: 0 18px 34px rgba(74, 55, 28, 0.1);
 }
 
 .rental-order-header {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto auto;
   gap: 20px;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid #e8d4b5;
   margin-bottom: 12px;
   padding-bottom: 12px;
 }
@@ -164,7 +485,7 @@ button {
   grid-template-columns: 80px minmax(0, 1fr) 140px auto;
   gap: 16px;
   align-items: center;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid #e8d4b5;
   padding: 12px 0;
 }
 
@@ -179,7 +500,61 @@ button {
   border-radius: 6px;
 }
 
+.rental-actions,
+.review-box {
+  display: grid;
+  gap: 8px;
+}
+
+.rental-actions input,
+.review-box select,
+.review-box textarea {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 8px;
+}
+
+.review-box textarea {
+  min-height: 72px;
+  resize: vertical;
+}
+
 @media (max-width: 760px) {
+  .navbar {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .nav-links {
+    justify-content: flex-start;
+  }
+
+  .home-hero {
+    min-height: auto;
+    padding: 48px 20px;
+    background:
+      linear-gradient(120deg, rgba(39, 48, 22, 0.95), rgba(67, 70, 36, 0.78)),
+      url("/hero-boardgame.webp") bottom right / 210px auto no-repeat;
+  }
+
+  .hero-search {
+    border-radius: 18px;
+    flex-direction: column;
+  }
+
+  .section-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .games-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .game-card-actions {
+    grid-template-columns: 1fr;
+  }
+
   .checkout-layout,
   .checkout-item,
   .rental-order-header,

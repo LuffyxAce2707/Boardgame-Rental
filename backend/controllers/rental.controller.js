@@ -71,6 +71,40 @@ exports.getAllRentals = async (req, res) => {
   }
 };
 
+exports.extendRental = async (req, res) => {
+  try {
+
+    const result = await rentalService.extendRental(req.params.id, req.body);
+
+    res.status(200).json({
+      success: true,
+      data: result
+    });
+
+  } catch (err) {
+    res.status(500).json({
+      error: err.message
+    });
+  }
+};
+
+exports.reviewRental = async (req, res) => {
+  try {
+
+    const rental = await rentalService.reviewRental(req.params.id, req.body);
+
+    res.status(200).json({
+      success: true,
+      data: rental
+    });
+
+  } catch (err) {
+    res.status(500).json({
+      error: err.message
+    });
+  }
+};
+
 exports.checkoutRentals = async (req, res) => {
   try {
 

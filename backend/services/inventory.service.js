@@ -2,6 +2,7 @@ const BoardGame = require('../models/Boardgame');
 
 const buildGameFilter = (query) => {
   const {
+    keyword,
     category,
     difficulty,
     players,
@@ -12,6 +13,13 @@ const buildGameFilter = (query) => {
   } = query;
 
   const filter = {};
+
+  if (keyword) {
+    filter.title = {
+      $regex: keyword,
+      $options: 'i'
+    };
+  }
 
   if (category) {
     filter.category = category;

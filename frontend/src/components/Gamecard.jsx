@@ -37,29 +37,45 @@ const GameCard = ({ game }) => {
   return (
     <div className="game-card">
 
-      <img
-        src={game.imageUrl}
-        alt={game.title}
-      />
+      <div className="game-card-media">
+        <img
+          src={game.imageUrl}
+          alt={game.title}
+        />
+        <span>{game.status || 'Available'}</span>
+      </div>
 
-      <h3>{game.title}</h3>
+      <div className="game-card-body">
+        <div className="game-tags">
+          {game.category && <span>{game.category}</span>}
+          {game.difficulty && <span>{game.difficulty}</span>}
+        </div>
 
-      <p>{game.category}</p>
+        <h3>{game.title}</h3>
 
-      <p>${game.rentalPrice}</p>
+        <p className="game-card-meta">
+          {game.minPlayers && game.maxPlayers
+            ? `${game.minPlayers}-${game.maxPlayers} players`
+            : 'Players vary'}
+          {game.playTime ? ` · ${game.playTime} min` : ''}
+        </p>
 
-      <Link to={`/boardgames/${game._id}`}>
-        View Details
-      </Link>
+        <p className="game-price">${game.rentalPrice}/day</p>
 
-      <button
-        type="button"
-        onClick={addToCart}
-        disabled={!game.availableQuantity}
-        style={{ marginLeft: '10px' }}
-      >
-        Add to Checkout
-      </button>
+        <div className="game-card-actions">
+          <Link to={`/boardgames/${game._id}`}>
+            View Details
+          </Link>
+
+          <button
+            type="button"
+            onClick={addToCart}
+            disabled={!game.availableQuantity}
+          >
+            Rent Now
+          </button>
+        </div>
+      </div>
     </div>
   );
 };
