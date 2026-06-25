@@ -5,10 +5,10 @@ const { uploadImage } = require('../middleware/uploadMiddleware');
 
 const boardgameController = require('../controllers/boardgame.controller');
 
-// Public APIs (any authenticated user)
-router.get('/', authMiddleware(), boardgameController.getAllGames);
-router.get('/search', authMiddleware(), boardgameController.searchGames);
-router.get('/:id', authMiddleware(), boardgameController.getGameById);
+// Public APIs
+router.get('/', boardgameController.getAllGames);
+router.get('/search', boardgameController.searchGames);
+router.get('/:id', boardgameController.getGameById);
 
 // Admin / Staff APIs
 router.post(
