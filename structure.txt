@@ -1,0 +1,78 @@
+﻿backend
+├── config
+│   ├── cloudinary.js
+├── controllers
+│   ├── auth.controller.js
+│   ├── boardgame.controller.js
+│   ├── dashboard.controller.js
+│   ├── rental.controller.js
+├── middleware
+│   ├── auth.middleware.js
+│   ├── uploadMiddleware.js
+├── models
+│   ├── Boardgame.js
+│   ├── Rental.js
+│   ├── User.js
+├── routes
+│   ├── auth.routes.js
+│   ├── boardgame.routes.js
+│   ├── dashboard.routes.js
+│   ├── rental.routes.js
+├── scripts
+│   ├── check-env.js
+│   ├── promote-admin.js
+│   ├── rehearse-demo.js
+│   ├── seed-demo.js
+├── services
+│   ├── inventory.service.js
+│   ├── rental.service.js
+│   ├── user.service.js
+├── uploads
+│   ├── Catan.webp
+│   ├── Codenames.webp
+│   ├── Pandemic.webp
+│   ├── Splendor.webp
+│   ├── Ticket to Ride.webp
+├── utils
+├── .env
+├── .gitignore
+├── app.js
+├── package-lock.json
+├── package.json
+
+frontend
+├── public
+│   ├── bank-transfer-qr.jpg
+│   ├── favicon.svg
+│   ├── hero-boardgame.webp
+│   ├── icons.svg
+├── src
+│   ├── api
+│   │   ├── axios.js
+│   ├── components
+│   │   ├── Gamecard.jsx
+│   │   ├── Navbar.jsx
+│   ├── context
+│   │   ├── AuthContext.jsx
+│   ├── pages
+│   │   ├── AdminDashboard.jsx
+│   │   ├── BoardgameDetail.jsx
+│   │   ├── BoardgameList.jsx
+│   │   ├── Checkout.jsx
+│   │   ├── Home.jsx
+│   │   ├── Login.jsx
+│   │   ├── Register.jsx
+│   │   ├── RentalHistory.jsx
+│   │   ├── Rentals.jsx
+│   ├── services
+│   │   ├── rental.service.js
+│   ├── App.jsx
+│   ├── index.css
+│   ├── main.jsx
+├── .gitignore
+├── eslint.config.js
+├── index.html
+├── package-lock.json
+├── package.json
+├── README.md
+├── vite.config.js

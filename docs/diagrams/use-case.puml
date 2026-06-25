@@ -1,0 +1,51 @@
+left to right direction
+skinparam packageStyle rectangle
+
+actor Customer
+actor Staff
+actor Admin
+
+Staff <|-- Admin
+
+rectangle "Boardgame Rental System" {
+  usecase "Register" as UC_Register
+  usecase "Login" as UC_Login
+  usecase "Browse and filter catalog" as UC_Browse
+  usecase "View game details" as UC_Detail
+  usecase "Add to cart" as UC_Cart
+  usecase "Checkout rentals" as UC_Checkout
+  usecase "Pay with card" as UC_Card
+  usecase "Pay with bank transfer" as UC_Bank
+  usecase "View active rentals" as UC_Active
+  usecase "View rental history" as UC_History
+  usecase "Return game" as UC_Return
+  usecase "Extend rental" as UC_Extend
+  usecase "Review rental" as UC_Review
+  usecase "Add game" as UC_Add
+  usecase "Update game" as UC_Update
+  usecase "Delete game" as UC_Delete
+  usecase "View all rentals" as UC_AllRentals
+}
+
+Customer --> UC_Register
+Customer --> UC_Login
+Customer --> UC_Browse
+Customer --> UC_Detail
+Customer --> UC_Cart
+Customer --> UC_Checkout
+Customer --> UC_Active
+Customer --> UC_History
+Customer --> UC_Return
+Customer --> UC_Extend
+Customer --> UC_Review
+
+Staff --> UC_Add
+Staff --> UC_Update
+Staff --> UC_AllRentals
+Admin --> UC_Delete
+
+UC_Checkout ..> UC_Login : <<include>>
+UC_Return ..> UC_Login : <<include>>
+UC_Add ..> UC_Login : <<include>>
+UC_Card ..> UC_Checkout : <<extend>>
+UC_Bank ..> UC_Checkout : <<extend>>
