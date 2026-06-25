@@ -1,7 +1,17 @@
+import { useContext } from 'react';
 import { Link } from 'react-router-dom';
 
+import { AuthContext } from '../context/AuthContext';
+
 const GameCard = ({ game }) => {
+  const { user } = useContext(AuthContext);
+
   const addToCart = () => {
+    if (!user) {
+      alert('Please log in');
+      return;
+    }
+
     const currentCart = JSON.parse(localStorage.getItem('rentalCart')) || [];
     const existingItem = currentCart.find((item) => item._id === game._id);
 

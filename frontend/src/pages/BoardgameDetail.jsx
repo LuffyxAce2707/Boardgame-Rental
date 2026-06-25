@@ -1,14 +1,18 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useContext, useEffect, useState } from 'react';
 
 import { useParams } from 'react-router-dom';
 
 import API from '../api/axios';
+
+import { AuthContext } from '../context/AuthContext';
 
 import { rentGame } from '../services/rental.service';
 
 const BoardgameDetail = () => {
 
   const { id } = useParams();
+
+  const { user } = useContext(AuthContext);
 
   const [game, setGame] = useState(null);
 
@@ -40,6 +44,11 @@ const BoardgameDetail = () => {
   };
 
   const addToCart = () => {
+    if (!user) {
+      alert('Please log in');
+      return;
+    }
+
     const currentCart = JSON.parse(localStorage.getItem('rentalCart')) || [];
     const existingItem = currentCart.find((item) => item._id === game._id);
 
@@ -73,6 +82,10 @@ const BoardgameDetail = () => {
   };
 
   const handleRent = async () => {
+    if (!user) {
+      alert('Please log in');
+      return;
+    }
 
     try {
 
